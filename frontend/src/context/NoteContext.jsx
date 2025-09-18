@@ -1,30 +1,30 @@
-import { children, createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import BACKEND_URL from "../api/url";
 
 export const NoteContext = createContext();
 
-export const NoteProvider = ({children})=>{
-    
-const [notes, setNotes] = useState([]);
+export const NoteProvider=({children})=>{
+    const [notes, setNotes] = useState([]);
 const [loading, setLoading] = useState(true);
 
-//fetch all notes
+// fetch all notes
 const getNotes = async() => {
     setLoading(true);
     try {
-        const response = await BACKEND_URL.get('/get-notes');
-        setNotes(response.data)
+        const response = await BACKEND_URL.get("/get-notes");
+        setNotes(response.data);
     } catch (error) {
         console.error("Error fetching notes:", error);
-    }finally{
+    } finally {
         setLoading(false);
     }
 }
+
 useEffect(()=>{
     getNotes();
 },[])
 
-//create a note
+// create a note
 const createNote = async(note) => {
     const res=await BACKEND_URL.post("/create-note",note)
     setNotes([res.data,...notes])
@@ -43,7 +43,7 @@ const deleteNote = async(id) => {
 }
 
 return(
-    <NoteContext.Provider value={{notes,loading,createNote, updateNote, deleteNote}}>
+    <NoteContext.Provider value={{notes,loading,createNote,updateNote,deleteNote}}>
         {children}
     </NoteContext.Provider>
 )
